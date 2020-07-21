@@ -1,5 +1,6 @@
 import os
 import re
+import json
 
 
 import xml.etree.ElementTree as ET
@@ -145,16 +146,58 @@ class Project():
     description = ''
     size = ''
     workflows = []
+    path_proj_json = ''
+    path_proj_dir = ''
+    dict_proj_json = None
     
-    def __init__(self):
-        pass
+    def __read_proj_json(self):
+        with open (self.path_proj_json, 'r') as f:
+            self.dict_proj_json = json.load(f)
+    
+    def __get_proj_name(self):
+        self.name = self.dict_proj_json['name']
+    
+    def __get_proj_description(self):
+        self.description = self.dict_proj_json['description']
+    
+    def __get_proj_size(self):
+        total_size = 0
+        for path, dirs, files in os.walk(self.path_proj_dir):
+            for f in files:
+                fp = os.path.join(path, f)
+                total_size += os.path.getsize(fp)
+        self.size = total_size
+    
+    def __get_all_xamls(self):
+        xamls = []
+        for p, d, f in os.walk(self.path_proj_dir):
+            xamls += [os.path.join(p, x) for x in f if x.split('.')[-1].upper() == 'XAML']
+        return xamls
+
+    def __get_workflows(self):
+        xamls = self.__get_all_xamls()
+        self.workflows = [Workflow(w) for w in xamls]
+
+    
+    def __str__(self):
+        return f'''Name: {self.name}; Description: {self.description}; Size: {self.size}; Workflows: {len(self.workflows)}'''
+    
+    def __init__(self, path_proj_json):
+        self.path_proj_json = path_proj_json
+        self.path_proj_dir, _ = os.path.split(path_proj_json)
+        self.__read_proj_json()
+        self.__get_proj_name()
+        self.__get_proj_description()
+        self.__get_proj_size()
+        self.__get_workflows()
+        
 
 
 
 if __name__ == '__main__':
-    path_xaml = r'C:\Users\markb\Documents\UiPath\02_Zoom_DispatchPlayers_backup\Sequence.xaml'
-    w = Workflow(path_xaml)
-    print('=======================')
-    for ww in w.activities:
-#        print(ww.name, ww.selector)
-        pass
+    
+    path_proj = r'C:\Users\markb\Documents\projects\uipath-codeReview\data\project1\project.json'
+    path_proj_dir = r'C:\Users\markb\Documents\projects\uipath-codeReview\data\project1'
+    p = Project(path_proj)
+    print(p)
+

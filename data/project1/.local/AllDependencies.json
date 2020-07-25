@@ -1724,9 +1724,9 @@
     "restore": {
       "projectUniqueName": "tetstProject",
       "projectName": "tetstProject",
-      "projectPath": "C:\\Users\\markb\\Documents\\UiPath\\tetstProject\\.local",
+      "projectPath": "C:\\Users\\markb\\Documents\\projects\\uipath-codeReview\\data\\project1\\.local",
       "packagesPath": "C:\\Users\\markb\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\markb\\Documents\\UiPath\\tetstProject\\.local"
+      "outputPath": "C:\\Users\\markb\\Documents\\projects\\uipath-codeReview\\data\\project1\\.local"
     },
     "frameworks": {
       "net461": {

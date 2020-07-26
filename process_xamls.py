@@ -19,13 +19,7 @@ class Variable():
         t = r.group(1)
         self.datatype = t
     
-    def __init__(self, xaml_variable):
-#        self.datatype = ''
-#        self.name = ''
-#        self.scope = ''
-#        self.default_value = ''
-#        self.xaml_variable = None
-        
+    def __init__(self, xaml_variable):        
         self.xaml_variable = xaml_variable
         self.__get_name()
         self.__get_type()      
@@ -112,7 +106,7 @@ class Activity():
     def __get_loop_exit_condition(self):
         for elem in self.xaml_activity.iter():
             try:
-                return (elem.attrib['ExpressionText'])
+                return (elem.attrib['Condition'])
             except:
                 pass
 
@@ -139,11 +133,12 @@ class Workflow():
             v = Variable(c)
             self.variables.append(v)
 
-    def get_loops(self):
+    def __get_loops(self):
         l = []
         for a in self.activities:
-            if a.activity_type in ['While', 'DoWhile']:
-                pass            
+            if a.is_loop:
+                l.append(a)
+        self.loops = l
     
     def __init__(self, path_workflow):
         self.activities = []
@@ -156,6 +151,7 @@ class Workflow():
         self.__find_all_activities(self.root)
         self.__find_arguments()
         self.__find_variables()
+        self.__get_loops()
 
 
 class Project():
@@ -191,15 +187,13 @@ class Project():
     def __str__(self):
         return f'''Name: {self.name}; Description: {self.description}; Size: {self.size}; Workflows: {len(self.workflows)}'''
     
-    def __init__(self, path_proj_json):
-#        self.name = ''
-#        self.description = ''
-#        self.size = ''
-#        self.workflows = []
-#        self.path_proj_json = ''
-#        self.path_proj_dir = ''
-#        self.dict_proj_json = None
-        
+    def __count_activities(self):
+        c = 0
+        for w in self.workflows:
+            c += len(w.activities)
+        self.counter_activities = c
+    
+    def __init__(self, path_proj_json):        
         self.path_proj_json = path_proj_json
         self.path_proj_dir, _ = os.path.split(path_proj_json)
         self.__read_proj_json()
@@ -207,6 +201,7 @@ class Project():
         self.__get_proj_description()
         self.__get_proj_size()
         self.__get_workflows()
+        self.__count_activities()
         
 
 
@@ -218,6 +213,6 @@ if __name__ == '__main__':
     w1 = Workflow(p1)
 #    w2 = Workflow(p2)
 
-    for a in w1.activities:
+    for a in w1.loops:
         if a.is_loop:
             print(a.activity_type, a.exit_condition)

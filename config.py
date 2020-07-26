@@ -1,4 +1,4 @@
-blacklist_activities = ['ClickImage']
+blacklist_activities = ['ClickImage', 'ExcelApplicationScope']
 
 default_activity_names = ['Click', 'Click Image', 'Type Into', 'While']
 

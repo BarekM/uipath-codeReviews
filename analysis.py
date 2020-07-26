@@ -17,7 +17,7 @@ class AnalysisWorkflow():
         self.get_activities_wo_selectors()
         self.get_duplicated_activity_names()
         self.get_defaulted_activity_names()
-        self.get_selectors()
+        self.get_activities_w_selectors()
         self.compliance_naming_variables()
         self.compliance_naming_arguments()
 
@@ -35,14 +35,14 @@ class AnalysisWorkflow():
         la = []
         p = cfg.naming_convention['arguments']
         reg = re.compile(p)
-        for a in self.workflow.variables:
+        for a in self.workflow.arguments:
             if not(reg.match(a.name)):
                 la.append(a)
         self.arguments_wrong_convention = la
         return la
     
-    def get_selectors(self):
-        s = [(a.name, a.selector) for a in self.workflow.activities]
+    def get_activities_w_selectors(self):
+        s = [a for a in self.workflow.activities if a.selector != '{x:Null}' and a.selector]
         self.selectors = s
         return s
     
@@ -103,6 +103,32 @@ class AnalysisWorkflow():
         self.defaulted_activity_names = dl
         return dl
 
+
+class AnalysisProject():
+    
+    def __init__(self, path_project_json):
+        self.__read_project(path_project_json)
+        self.analyzed_workflows = []
+        self.__analyse_workflows()
+        self.__read_project_data()
+    
+    def __read_project(self, path):
+        self.project = Project(path)
+    
+    def __read_project_data(self):
+        d = []
+        d.append(['Name', self.project.name])
+        d.append(['Description', self.project.description])
+        d.append(['Size', self.project.size])
+        d.append(['Workflows', len(self.project.workflows)])
+        d.append(['Activities', self.project.counter_activities])
+        self.project_data = d
+    
+    def __analyse_workflows(self):
+        for w in self.project.workflows:
+            self.analyzed_workflows.append(AnalysisWorkflow(w))
+
+
 if __name__ == '__main__':
     path_proj = r'C:\Users\markb\Documents\projects\uipath-codeReview\data\project1\project.json'
     p = Project(path_proj)
@@ -121,4 +147,8 @@ if __name__ == '__main__':
 #        print(d, e)
 #    print(a.selectors)
 #    for f in a.defaulted_activity_names:
-#        print(f.name)
+#        print(f.name)\
+    ap = AnalysisProject(path_proj)
+#    for bl in ap.analyzed_workflows:
+#        for bbl in bl.blacklisted_activities:
+#            print(bbl.name)

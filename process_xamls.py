@@ -13,10 +13,13 @@ class Variable():
     
     def __get_type(self):
         t = self.xaml_variable.attrib['{http://schemas.microsoft.com/winfx/2006/xaml}TypeArguments']
-        p = 'x:(\w+)'
+        p = '\w:(\w+)'
         reg = re.compile(p)
         r = reg.search(t)
-        t = r.group(1)
+        try:
+            t = r.group(1)
+        except:
+            print(f'variable type not extracted: {t}')
         self.datatype = t
     
     def __init__(self, xaml_variable):        
@@ -44,10 +47,13 @@ class Argument(Variable):
     
     def __get_datatype(self):
         t = self.xaml_argument.attrib['Type']
-        p = '\(x:(\w+)\)'
+        p = '\(\w+:([\w\[\]:,\s]*)\)'
         reg = re.compile(p)
         r = reg.search(t)
-        t = r.group(1)
+        try:
+            t = r.group(1)
+        except:
+            print(f'argument type not extracted: {t}')
         self.datatype = t
 
     def __init__(self, xaml_argument):      

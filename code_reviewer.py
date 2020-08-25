@@ -14,6 +14,19 @@ class CodeReviewer():
     def __save_data(self, sheet_name, data):
         self.excel.save_data(sheet_name, data)
     
+    def review(self):
+        self.review_selectorless()
+        self.review_project_data()
+        self.review_blacklisted_activities()
+        self.review_defaulted_activities()
+        self.review_duplicated_activities()
+        self.review_selectors()
+        self.review_variables_naming()
+        self.review_arguments_naming()
+        self.review_activities()
+        self.review_workflows()
+        self.review_loops()
+    
     def review_project_data(self):
         self.__save_data('ProjectInfo', self.analysis.project_data)
     
@@ -105,18 +118,23 @@ class CodeReviewer():
     
 if __name__ == '__main__':
     p = r'C:\Users\markb\Documents\projects\uipath-codeReview\data\project1\project.json'
+    p = r'C:\Users\markb\Documents\UiPath\01_Zoom_CreateRooms\project.json'
     pr = r'report.xlsx'
-    os.remove(pr)
+    try:
+        os.remove(pr)
+    except:
+        pass
     
     cr = CodeReviewer(p, pr)
-    cr.review_selectorless()
-    cr.review_project_data()
-    cr.review_blacklisted_activities()
-    cr.review_defaulted_activities()
-    cr.review_duplicated_activities()
-    cr.review_selectors()
-    cr.review_variables_naming()
-    cr.review_arguments_naming()
-    cr.review_activities()
-    cr.review_workflows()
-    cr.review_loops()
+    cr.review()
+#    cr.review_selectorless()
+#    cr.review_project_data()
+#    cr.review_blacklisted_activities()
+#    cr.review_defaulted_activities()
+#    cr.review_duplicated_activities()
+#    cr.review_selectors()
+#    cr.review_variables_naming()
+#    cr.review_arguments_naming()
+#    cr.review_activities()
+#    cr.review_workflows()
+#    cr.review_loops()

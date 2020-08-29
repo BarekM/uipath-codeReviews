@@ -50,10 +50,14 @@ class Window(Frame):
             d = datetime.now()
             report_name = f'report_{d.strftime("%Y%m%d_%H%M%S")}.xlsx'
             path_report = os.path.join(config.path_reports, report_name)
-            cr = CodeReviewer(path_project_json=path_project,
-                              path_report=path_report)
-            cr.review()
-            messagebox.showinfo(message='done')
+            try:
+                cr = CodeReviewer(path_project_json=path_project,
+                                  path_report=path_report)
+                cr.review()
+                msg = 'done'
+            except Exception as e:
+                msg = str(e)
+            messagebox.showinfo(message=msg)
     
     def open_reports(self):
         subprocess.Popen(rf'explorer {config.path_reports}')

@@ -118,7 +118,7 @@ class CodeReviewer():
     
 if __name__ == '__main__':
     p = r'C:\Users\markb\Documents\projects\uipath-codeReview\data\project1\project.json'
-    p = r'C:\Users\markb\Documents\UiPath\01_Zoom_CreateRooms\project.json'
+#    p = r'C:\Users\markb\Documents\UiPath\01_Zoom_CreateRooms\project.json'
     pr = r'report.xlsx'
     try:
         os.remove(pr)

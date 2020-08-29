@@ -2,7 +2,7 @@ import os
 
 
 import openpyxl
-
+from openpyxl.utils import get_column_letter
 
 class ExcelHandler():
     
@@ -22,10 +22,12 @@ class ExcelHandler():
         else:
             return self.wb.create_sheet(title)
     
-    def save_data(self, sheet_name, data):
+    def save_data(self, sheet_name, data, flag_autosize_columns=True):
         ws = self.__init_sheet(sheet_name)
         for d in data:
             ws.append(d)
+        if flag_autosize_columns:
+            self.__autosize_columns(ws, data)
         self.__save_wb()
     
     def __init_file(self):
@@ -34,7 +36,19 @@ class ExcelHandler():
          else:
              self.wb = openpyxl.Workbook()
              self.__save_wb
-             
+    
+    def __autosize_columns(self, ws, data):
+        column_widths = []
+        for row in data:
+            for i, cell in enumerate(row):
+                if len(column_widths) > i:
+                    if len(str(cell)) > column_widths[i]:
+                        column_widths[i] = len(str(cell))
+                else:
+                    column_widths += [len(cell)]
+        
+        for i, column_width in enumerate(column_widths):
+            ws.column_dimensions[get_column_letter(i+1)].width = column_width
              
              
 if __name__ == '__main__':

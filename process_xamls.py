@@ -74,7 +74,11 @@ class Activity():
         self.__check_if_loop()
     
     def __get_name(self):
-        n = self.xaml_activity.attrib['DisplayName']
+        try:
+            n = self.xaml_activity.attrib['DisplayName']
+        except:
+#            self.__print_element(self.xaml_activity)
+            n = ''
         self.name = n
     
     def __print_element(self, elem):
